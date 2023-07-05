@@ -258,7 +258,7 @@ Partial Class Form_Absensi
         Me.DGV_VIEW_ABSENSI.Name = "DGV_VIEW_ABSENSI"
         Me.DGV_VIEW_ABSENSI.RowHeadersVisible = False
         Me.DGV_VIEW_ABSENSI.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.DGV_VIEW_ABSENSI.Size = New System.Drawing.Size(702, 270)
+        Me.DGV_VIEW_ABSENSI.Size = New System.Drawing.Size(730, 270)
         Me.DGV_VIEW_ABSENSI.TabIndex = 128
         Me.DGV_VIEW_ABSENSI.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.[Default]
         Me.DGV_VIEW_ABSENSI.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White
@@ -306,7 +306,7 @@ Partial Class Form_Absensi
         Me.Guna2Panel1.Location = New System.Drawing.Point(12, 22)
         Me.Guna2Panel1.Name = "Guna2Panel1"
         Me.Guna2Panel1.ShadowDecoration.Parent = Me.Guna2Panel1
-        Me.Guna2Panel1.Size = New System.Drawing.Size(753, 538)
+        Me.Guna2Panel1.Size = New System.Drawing.Size(765, 538)
         Me.Guna2Panel1.TabIndex = 129
         '
         'ABSENSI_BTN_ABSENSI_PULANG

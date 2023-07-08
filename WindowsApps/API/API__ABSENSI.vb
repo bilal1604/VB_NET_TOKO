@@ -26,6 +26,8 @@ Module API__ABSENSI
             Form_Absensi.DGV_VIEW_ABSENSI.Columns(i).DefaultCellStyle.BackColor = Color.AntiqueWhite
             Form_Absensi.DGV_VIEW_ABSENSI.Columns(i).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
         Next
+        GET_API_ABSENSI()
+
 
 
     End Sub
@@ -64,5 +66,67 @@ Module API__ABSENSI
 
         End Try
     End Sub
+
+    Public Sub POST_API_ABSENS_HADIR()
+
+        Dim validasi_waktu As String
+        Dim validasi_shift As String
+
+        validasi_waktu = Date.Now.ToString("HH")
+
+        Dim waktu As Integer = Integer.Parse(validasi_waktu)
+
+
+        If waktu >= 0 And waktu <= 7 Then
+            validasi_waktu = "Hadir Tepat Waktu"
+            validasi_shift = "Shift Satu"
+
+        ElseIf waktu >= 8 And waktu <= 12 Then
+            validasi_waktu = "Datang Terlambat"
+
+        ElseIf waktu >= 13 And waktu <= 15 Then
+            validasi_waktu = "Hadir Tepat Waktu"
+            validasi_shift = "Shift Dua"
+
+        ElseIf waktu >= 16 And waktu <= 23 Then
+            validasi_waktu = "Datang Terlambat"
+
+        End If
+
+        Dim url As String = "http://localhost/toko/api/absensi_hadir/" + Form_Absensi.ABSENSI_LABEL_USERNAME.Text + "/" + Form_Absensi.ABSENSI_LABEL_NAMA_KARYAWAN.Text + "/" + Form_Absensi.ABSENSI_LABEL_CLASS.Text + "/" + Form_Absensi.ABSENSI_LABEL_STATUS.Text + "/" + Date.Now.ToString("yyyy-MM-dd") + "/" + Date.Now.ToString("HH:mm:ss") + "/" + validasi_shift + "/" + validasi_waktu.ToString
+        Dim uri As New Uri(url)
+        Dim request As HttpWebRequest = HttpWebRequest.Create(url)
+        request.Method = "POST"
+        Dim response As HttpWebResponse = request.GetResponse
+        Dim reader As StreamReader = New StreamReader(response.GetResponseStream())
+        Dim return_api As String = reader.ReadToEnd
+        MessageBox.Show("BERHASIL CREATE DATA", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        GET_API_ABSENSI()
+
+    End Sub
+
+
+    Public Sub GET_API_ABSENSI() 'GET DATA USER AREA
+        Form_Absensi.DGV_VIEW_ABSENSI.Rows.Clear()
+        Try
+            Dim url As String = "http://localhost/toko/api/Absensi_get_by_id/" + Date.Now.ToString("yyyy-MM-dd")
+            Dim uri As New Uri(url)
+            Dim request As HttpWebRequest = HttpWebRequest.Create(url)
+            request.Method = "GET"
+            Dim response As HttpWebResponse = request.GetResponse
+            Dim reader As StreamReader = New StreamReader(response.GetResponseStream())
+            Dim return_api As String = reader.ReadToEnd
+            Dim list_dist As Object = New JavaScriptSerializer().Deserialize(Of List(Of Object))(return_api)
+            For Each item As Object In list_dist
+                Form_Absensi.DGV_VIEW_ABSENSI.Rows.Add(item("username").ToString, item("nama_karyawan").ToString, item("tanggal").ToString, item("jam").ToString, item("shift").ToString, item("keterangan").ToString)
+            Next
+
+
+        Catch ex As Exception
+            MsgBox(ex.Message, MsgBoxStyle.Exclamation, "Notifikasi Eroor")
+
+        End Try
+    End Sub
+
 
 End Module

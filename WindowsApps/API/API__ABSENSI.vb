@@ -26,7 +26,7 @@ Module API__ABSENSI
             Form_Absensi.DGV_VIEW_ABSENSI.Columns(i).DefaultCellStyle.BackColor = Color.AntiqueWhite
             Form_Absensi.DGV_VIEW_ABSENSI.Columns(i).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
         Next
-        GET_API_ABSENSI()
+        GET_API_ABSENSI_ID()
 
 
 
@@ -67,7 +67,7 @@ Module API__ABSENSI
         End Try
     End Sub
 
-    Public Sub POST_API_ABSENS_HADIR()
+    Public Sub POST_API_ABSENSI_HADIR()
 
         Dim validasi_waktu As String
         Dim validasi_shift As String
@@ -95,7 +95,7 @@ Module API__ABSENSI
 
         End If
 
-        Dim url As String = "http://localhost/toko/api/absensi_hadir/" + Form_Absensi.ABSENSI_LABEL_USERNAME.Text + "/" + Form_Absensi.ABSENSI_LABEL_NAMA_KARYAWAN.Text + "/" + Form_Absensi.ABSENSI_LABEL_CLASS.Text + "/" + Form_Absensi.ABSENSI_LABEL_STATUS.Text + "/" + Date.Now.ToString("yyyy-MM-dd") + "/" + Date.Now.ToString("HH:mm:ss") + "/" + validasi_shift + "/" + validasi_waktu.ToString
+        Dim url As String = "http://localhost/toko/api/absensi/" + Form_Absensi.ABSENSI_LABEL_USERNAME.Text + "/" + Form_Absensi.ABSENSI_LABEL_NAMA_KARYAWAN.Text + "/" + Form_Absensi.ABSENSI_LABEL_CLASS.Text + "/" + Form_Absensi.ABSENSI_LABEL_STATUS.Text + "/" + Date.Now.ToString("yyyy-MM-dd") + "/" + Date.Now.ToString("HH:mm:ss") + "/" + validasi_shift + "/" + validasi_waktu.ToString
         Dim uri As New Uri(url)
         Dim request As HttpWebRequest = HttpWebRequest.Create(url)
         request.Method = "POST"
@@ -103,17 +103,19 @@ Module API__ABSENSI
         Dim reader As StreamReader = New StreamReader(response.GetResponseStream())
         Dim return_api As String = reader.ReadToEnd
         MessageBox.Show("BERHASIL CREATE DATA", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        GET_API_ABSENSI()
+        Form_Absensi.ABSENSI_TXT_CARI.Text = ""
+        Form_Absensi.ABSENSI_TXT_CARI.Focus()
+        Form_Absensi.ABSENSI_BTN_ABSENSI_PULANG.Enabled = False
+        GET_API_ABSENSI_ID()
 
     End Sub
 
-    Public Sub POST_API_ABSENS_PULANG()
+    Public Sub POST_API_ABSENSI_PULANG()
 
         Dim validasi_waktu As String
         Dim validasi_shift As String
 
         validasi_waktu = Date.Now.ToString("HH")
-        validasi_shift = Date.Now.ToString("HH")
 
         Dim waktu As Integer = Integer.Parse(validasi_waktu)
 
@@ -130,7 +132,7 @@ Module API__ABSENSI
             validasi_waktu = "Pulang Tepat Waktu"
             validasi_shift = "Shift Satu"
 
-            Dim url As String = "http://localhost/toko/api/absensi_pulang/" + Form_Absensi.ABSENSI_LABEL_USERNAME.Text + "/" + Form_Absensi.ABSENSI_LABEL_NAMA_KARYAWAN.Text + "/" + Form_Absensi.ABSENSI_LABEL_CLASS.Text + "/" + Form_Absensi.ABSENSI_LABEL_STATUS.Text + "/" + Date.Now.ToString("yyyy-MM-dd") + "/" + Date.Now.ToString("HH:mm:ss") + "/" + validasi_shift + "/" + validasi_waktu.ToString
+            Dim url As String = "http://localhost/toko/api/absensi/" + Form_Absensi.ABSENSI_LABEL_USERNAME.Text + "/" + Form_Absensi.ABSENSI_LABEL_NAMA_KARYAWAN.Text + "/" + Form_Absensi.ABSENSI_LABEL_CLASS.Text + "/" + Form_Absensi.ABSENSI_LABEL_STATUS.Text + "/" + Date.Now.ToString("yyyy-MM-dd") + "/" + Date.Now.ToString("HH:mm:ss") + "/" + validasi_shift + "/" + validasi_waktu.ToString
             Dim uri As New Uri(url)
             Dim request As HttpWebRequest = HttpWebRequest.Create(url)
             request.Method = "POST"
@@ -138,13 +140,17 @@ Module API__ABSENSI
             Dim reader As StreamReader = New StreamReader(response.GetResponseStream())
             Dim return_api As String = reader.ReadToEnd
             MessageBox.Show("ABSENSI PULANG BERHASIL", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Form_Absensi.ABSENSI_TXT_CARI.Text = ""
             Form_Absensi.ABSENSI_TXT_CARI.Focus()
+            Form_Absensi.ABSENSI_BTN_ABSENSI_PULANG.Enabled = True
+            Form_Absensi.ABSENSI_BTN_HADIR.Enabled = True
+
 
         ElseIf waktu >= 20 And waktu <= 23 Then
             validasi_waktu = "Pulang Tepat Waktu"
             validasi_shift = "Shift Dua"
 
-            Dim url As String = "http://localhost/toko/api/absensi_pulang/" + Form_Absensi.ABSENSI_LABEL_USERNAME.Text + "/" + Form_Absensi.ABSENSI_LABEL_NAMA_KARYAWAN.Text + "/" + Form_Absensi.ABSENSI_LABEL_CLASS.Text + "/" + Form_Absensi.ABSENSI_LABEL_STATUS.Text + "/" + Date.Now.ToString("yyyy-MM-dd") + "/" + Date.Now.ToString("HH:mm:ss") + "/" + validasi_shift + "/" + validasi_waktu.ToString
+            Dim url As String = "http://localhost/toko/api/absensi/" + Form_Absensi.ABSENSI_LABEL_USERNAME.Text + "/" + Form_Absensi.ABSENSI_LABEL_NAMA_KARYAWAN.Text + "/" + Form_Absensi.ABSENSI_LABEL_CLASS.Text + "/" + Form_Absensi.ABSENSI_LABEL_STATUS.Text + "/" + Date.Now.ToString("yyyy-MM-dd") + "/" + Date.Now.ToString("HH:mm:ss") + "/" + validasi_shift + "/" + validasi_waktu.ToString
             Dim uri As New Uri(url)
             Dim request As HttpWebRequest = HttpWebRequest.Create(url)
             request.Method = "POST"
@@ -152,20 +158,22 @@ Module API__ABSENSI
             Dim reader As StreamReader = New StreamReader(response.GetResponseStream())
             Dim return_api As String = reader.ReadToEnd
             MessageBox.Show("ABSENSI PULANG BERHASIL", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Form_Absensi.ABSENSI_TXT_CARI.Text = ""
             Form_Absensi.ABSENSI_TXT_CARI.Focus()
+            Form_Absensi.ABSENSI_BTN_ABSENSI_PULANG.Enabled = True
+            Form_Absensi.ABSENSI_BTN_HADIR.Enabled = True
+
+
 
         End If
 
-        GET_API_ABSENSI()
-        GET_API_ABSENSI_PULANG()
-
-
+        GET_API_ABSENSI_ID()
 
 
     End Sub
 
 
-    Public Sub GET_API_ABSENSI()
+    Public Sub GET_API_ABSENSI_ID()
         Form_Absensi.DGV_VIEW_ABSENSI.Rows.Clear()
         Try
             Dim url As String = "http://localhost/toko/api/Absensi_get_by_id/" + Date.Now.ToString("yyyy-MM-dd")
@@ -182,30 +190,11 @@ Module API__ABSENSI
 
 
         Catch ex As Exception
-            MsgBox(ex.Message, MsgBoxStyle.Exclamation, "Notifikasi Eroor")
+            MsgBox(ex.Message, MsgBoxStyle.Exclamation, "Notifikasi Eroor ")
 
         End Try
     End Sub
-    Public Sub GET_API_ABSENSI_PULANG()
-        Try
-            Dim url As String = "http://localhost/toko/api/Absensi_get_by_id_pulang/" + Date.Now.ToString("yyyy-MM-dd")
-            Dim uri As New Uri(url)
-            Dim request As HttpWebRequest = HttpWebRequest.Create(url)
-            request.Method = "GET"
-            Dim response As HttpWebResponse = request.GetResponse
-            Dim reader As StreamReader = New StreamReader(response.GetResponseStream())
-            Dim return_api As String = reader.ReadToEnd
-            Dim list_dist As Object = New JavaScriptSerializer().Deserialize(Of List(Of Object))(return_api)
-            For Each item As Object In list_dist
-                Form_Absensi.DGV_VIEW_ABSENSI.Rows.Add(item("username").ToString, item("nama_karyawan").ToString, item("tanggal").ToString, item("jam").ToString, item("shift").ToString, item("keterangan").ToString)
-            Next
 
-
-        Catch ex As Exception
-            MsgBox(ex.Message, MsgBoxStyle.Exclamation, "Notifikasi Eroor")
-
-        End Try
-    End Sub
 
     Public Sub VALIDASI_ABSENSI_HADIR()
 
@@ -225,7 +214,7 @@ Module API__ABSENSI
                 Dim return_api As String = reader.ReadToEnd
 
                 If return_api = "TRUE" Then
-                    POST_API_ABSENS_HADIR()
+                    POST_API_ABSENSI_HADIR()
                     API_CLEAR_ABSENSI()
 
 
@@ -235,7 +224,7 @@ Module API__ABSENSI
 
                 End If
             Catch ex As Exception
-                MsgBox(ex.Message, MsgBoxStyle.Exclamation, "Notifikasi Eroor")
+                MsgBox(ex.Message, MsgBoxStyle.Exclamation, "Notifikasi ERORRR Validasi Hadir")
 
             End Try
 
@@ -263,7 +252,7 @@ Module API__ABSENSI
                 Dim return_api As String = reader.ReadToEnd
 
                 If return_api = "TRUE" Then
-                    POST_API_ABSENS_PULANG()
+                    VALIDASI_ABSENSI_ROW_PULANG()
 
 
                 ElseIf return_api = "FALSE" Then
@@ -271,10 +260,9 @@ Module API__ABSENSI
                     VALIDASI_ABSENSI_PULANG()
                 End If
             Catch ex As Exception
-                MsgBox(ex.Message, MsgBoxStyle.Exclamation, "Notifikasi Eroor")
+                MsgBox(ex.Message, MsgBoxStyle.Exclamation, "Notifikasi EROORR Validasi Pulang")
 
             End Try
-
 
         End If
 
@@ -286,7 +274,7 @@ Module API__ABSENSI
         Dim KODE_BARANG As Integer = CInt(Form_Absensi.ABSENSI_LABEL_USERNAME.Text) 'INI UNTUK VALIDASI
 
         Dim ROWFOND As DataGridViewRow = Nothing
-            Dim INDEX As Integer = -1
+        Dim INDEX As Integer = -1
         For Each ROW As DataGridViewRow In Form_Absensi.DGV_VIEW_ABSENSI.Rows
             If CInt(ROW.Cells(0).Value) = KODE_BARANG Then
                 ROWFOND = ROW
@@ -297,6 +285,7 @@ Module API__ABSENSI
 
         If ROWFOND IsNot Nothing Then
             Form_Absensi.ABSENSI_BTN_HADIR.Enabled = False
+            Form_Absensi.ABSENSI_BTN_ABSENSI_PULANG.Enabled = True
 
             MessageBox.Show("DATA KEHADIRAN SUDAH ADA ", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
             MessageBox.Show("KLIK BUTTON PULANG MELANJUTKAN .. ", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -306,6 +295,42 @@ Module API__ABSENSI
 
         Else
             Form_Absensi.ABSENSI_BTN_HADIR.Enabled = True
+            Form_Absensi.ABSENSI_BTN_ABSENSI_PULANG.Enabled = False
+
+        End If
+
+    End Sub
+
+
+
+    Public Sub VALIDASI_ABSENSI_ROW_PULANG()
+        Dim KODE_BARANG As Integer = CInt(Form_Absensi.ABSENSI_LABEL_USERNAME.Text) 'INI UNTUK VALIDASI
+
+        Dim ROWFOND As DataGridViewRow = Nothing
+        Dim INDEX As Integer = -1
+        For Each ROW As DataGridViewRow In Form_Absensi.DGV_VIEW_ABSENSI.Rows
+            If CInt(ROW.Cells(0).Value) = KODE_BARANG Then
+                ROWFOND = ROW
+                INDEX = ROW.Index
+                Exit For
+            End If
+        Next
+
+        If ROWFOND IsNot Nothing Then
+            Form_Absensi.ABSENSI_BTN_ABSENSI_PULANG.Enabled = False
+
+            MessageBox.Show("DATA PULANG SUDAH ADA ", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+            Form_Absensi.ABSENSI_TXT_CARI.Focus()
+
+
+        Else
+
+            POST_API_ABSENSI_PULANG()
+            Form_Absensi.ABSENSI_BTN_HADIR.Enabled = True
+            Form_Absensi.ABSENSI_BTN_ABSENSI_PULANG.Enabled = False
+            Form_Absensi.ABSENSI_TXT_CARI.Focus()
+
         End If
 
     End Sub
